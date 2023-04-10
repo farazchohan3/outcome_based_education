@@ -1,0 +1,141 @@
+<!-- Profile Updation Card -->
+<div class="container-fluid mt-3" *ngIf="profileBool">
+  <div class="row w-100 m-0">
+    <div class="col">
+      <div class="card border">
+        <div class="card-header bg-white">
+          <div class="row w-100 m-0">
+            <div class="col-12 col-sm-6 px-0">
+              <h4>Profile</h4>
+            </div>
+            <div class="col-12 col-sm-6 px-0" *ngIf="!updateBool">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-primary d-flex align-items-center" (click)="changeUpdateMode()">
+                  <span class="material-icons mr-1" style="font-size: 18px;">edit</span>
+                  Edit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form [formGroup]="userForm" (ngSubmit)="updateProfile(userForm)">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="title" class="col-sm-2 col-form-label">Title</label>
+              <div class="col-sm">
+                <select name="title" id="title" class="custom-select" formControlName="title">
+                  <option [value]="title" *ngFor="let title of userSignatures;">{{ title }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="firstName" class="col-sm-2 col-form-label">First Name</label>
+              <div class="col-sm">
+                <input type="text" formControlName="firstName" name="firstName" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="lastName" class="col-sm-2 col-form-label">Last Name</label>
+              <div class="col-sm">
+                <input type="text" formControlName="lastName" name="lastName" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="email" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm">
+                <input type="email" formControlName="email" name="email" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="department" class="col-sm-2 col-form-label">Department</label>
+              <div class="col-sm">
+                <select name="title" id="title" class="custom-select" formControlName="department" name="department">
+                  <option [value]="dept" *ngFor="let dept of userDepartments;">{{ dept }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="title" class="col-sm-2 col-form-label">Designation</label>
+              <div class="col-sm">
+                <select name="title" id="title" class="custom-select" formControlName="designation" name="designation">
+                  <option [value]="role" *ngFor="let role of userDesignations;">{{ role }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-white border-0" *ngIf="updateBool">
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary d-flex align-items-center mr-2">
+                <span class="material-icons mr-1">update</span>
+                Update
+                <span *ngIf="updateLoader">&nbsp;</span>
+                <div *ngIf="updateLoader" class="spinner-border spinner-border-sm text-light" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </button>
+              <button type="button" class="btn btn-danger d-flex align-items-center" (click)="changeUpdateMode()">
+                <span class="material-icons mr-1">close</span>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Password Change Card -->
+<div class="container mt-3" *ngIf="!profileBool" style="width: 30rem;">
+  <div class="row w-100 m-0">
+    <div class="col">
+      <div class="card border">
+        <div class="card-header bg-white">
+          <h4>Change Password</h4>
+        </div>
+        <form [formGroup]="changePasswordForm">
+          <div class="card-body">
+            <div class="form-group col">
+              <label for="newPassword">New Password</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text material-icons bg-white">
+                    vpn_key
+                  </span>
+                </div>
+                <input type="password" class="form-control" name="password" formControlName="password"
+                  placeholder="******">
+              </div>
+            </div>
+            <div class="form-group col">
+              <label for="newPassword">Confirmed Password</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text material-icons bg-white">
+                    vpn_key
+                  </span>
+                </div>
+                <input type="password" class="form-control" name="confirmedPassword" formControlName="confirmedPassword"
+                  placeholder="******">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-white">
+            <div class="col">
+              <div class="d-flex justify-content-center align-items-stretch">
+                <button class="btn btn-primary flex-grow-1 d-flex justify-content-center align-items-center mr-2">
+                  <span class="material-icons mr-2">update</span>
+                  Update Password
+                </button>
+                <button class="btn btn-danger flex-grow-1 d-flex justify-content-center align-items-center">
+                  <span class="material-icons mr-2">close</span>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

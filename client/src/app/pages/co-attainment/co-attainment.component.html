@@ -1,0 +1,319 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white border-0">
+        <div class="d-flex flex-column">
+          <h4 class="m-0">{{ title }}</h4>
+          <app-filters (courseSelections)="getSelectedCourse($event)"></app-filters>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row w-100 m-0 mt-2">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white">
+        <h4 class="m-0">Target Table</h4>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-flush">
+          <thead class="thead-light">
+          <tr>
+            <th>Sr. No</th>
+            <th>Level Name</th>
+            <th>Level Value</th>
+            <th>Target</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>Low</td>
+            <td>1</td>
+            <td>{{ .50 | percent:'1.0':'en-US' }} </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Medium</td>
+            <td>2</td>
+            <td>{{ .60 | percent:'1.0':'en-US' }} </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>High</td>
+            <td>3</td>
+            <td>{{ .70 | percent:'1.0':'en-US' }} </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row w-100 m-0 mt-2">
+  <div class="col px-0">
+    <div class="card border-0">
+      <div class="card-header bg-white border">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4>Direct Attainment</h4>
+          <button class="btn btn-primary" [disabled]="selectedCourse === undefined" (click)="openDirectAttainmentModal(directAttainmentModalRef)">Calculate</button>
+        </div>
+      </div>
+      <div class="card-body p-0 bg-transparent border-0">
+        <div class="row mt-2">
+          <div class="col-12 col-sm-6">
+            <div class="card border">
+              <div class="card-header bg-white">
+                <h5 class="m-0 text-muted">CIA Attainment</h5>
+              </div>
+              <div class="card-body" *ngIf="ciaAttainment.length === 0">
+                <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>
+              </div>
+              <div class="table-responsive" *ngIf="ciaAttainment.length !== 0">
+                <table class="table table-flush text-center">
+                  <thead class="thead-light">
+                  <tr>
+                    <th>Sr. No</th>
+                    <th>CO Code</th>
+                    <th>Attainment Level</th>
+                    <th>Attainment Percentage</th>
+                    <!-- <th></th> -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let co of ciaAttainment; index as idx">
+                    <td>{{ idx + 1 }}</td>
+                    <td>{{ co.coCode }}</td>
+                    <td class="font-weight-bold">{{ co.attainmentLevel }}</td>
+                    <td class="font-weight-bold">{{ co.attaimentPercentage | percent:'1.2':'en-US' }}</td>
+                    <!-- <td></td> -->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 pl-0">
+            <div class="card border">
+              <div class="card-header bg-white">
+                <h5 class="m-0 text-muted">ESE Attainment</h5>
+              </div>
+              <div class="card-body" *ngIf="eseAttainment.length === 0">
+                <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>
+              </div>
+              <div class="table-responsive" *ngIf="eseAttainment.length !== 0">
+                <table class="table table-flush text-center">
+                  <thead class="thead-light">
+                  <tr>
+                    <th>Sr. No</th>
+                    <th>CO Code</th>
+                    <th>Attainment Level</th>
+                    <th>Attainment Percentage</th>
+                    <!-- <th></th> -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let co of eseAttainment; index as idx">
+                    <td>{{ idx + 1 }}</td>
+                    <td>{{ co.coCode }}</td>
+                    <td class="font-weight-bold">{{ co.attainmentLevel }}</td>
+                    <td class="font-weight-bold">{{ co.attaimentPercentage | percent:'1.2':'en-US' }}</td>
+                    <!-- <td></td> -->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <div class="card border">
+              <div class="card-header bg-white">
+                <h5 class="m-0 text-muted">Total Direct Attainment</h5>
+              </div>
+              <div class="card-body" *ngIf="totalDirectAttainment.length === 0">
+                <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>
+              </div>
+              <div class="table-responsive" *ngIf="totalDirectAttainment.length !== 0">
+                <table class="table table-flush text-center">
+                  <thead class="thead-light">
+                  <tr>
+                    <th>Sr. No</th>
+                    <th>CO Code</th>
+                    <th>CIA (%)</th>
+                    <th>ESE (%)</th>
+                    <th>Level</th>
+                    <th>Attainment (%)</th>
+                    <!-- <th></th> -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let co of totalDirectAttainment; index as idx">
+                    <td>{{ idx + 1 }}</td>
+                    <td>{{ co.coCode }}</td>
+                    <td class="font-weight-bold">{{ co.ciaPercentage | percent:'1.2':'en-US' }}</td>
+                    <td class="font-weight-bold">{{ co.esePercentage | percent:'1.2':'en-US' }}</td>
+                    <td class="font-weight-bold">{{ co.attainmentLevel }}</td>
+                    <td class="font-weight-bold">{{ co.totalAttainment | percent:'1.2':'en-US' }}</td>
+                    <!-- <td></td> -->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<div class="row w-100 m-0 mt-2">-->
+<!--  <div class="col px-0">-->
+<!--    <div class="card border">-->
+<!--      <div class="card-header bg-white">-->
+<!--        <div class="d-flex justify-content-between align-items-center">-->
+<!--          <h4>In Direct Attainment</h4>-->
+<!--          <button class="btn btn-primary" [disabled]="selectedCourse === undefined" (click)="openInDirectAttainmentModal(inDirectAttainmentModalRef)">Calculate</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-body" *ngIf="totalIndirectAttainment.length === 0">-->
+<!--        <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>-->
+<!--      </div>-->
+<!--      <div class="table-responsive" *ngIf="totalIndirectAttainment.length !== 0">-->
+<!--        <table class="table table-flush text-center">-->
+<!--          <thead class="thead-light">-->
+<!--          <tr>-->
+<!--            <th>Sr. No</th>-->
+<!--            <th>CO Code</th>-->
+<!--            <th>1</th>-->
+<!--            <th>%</th>-->
+<!--            <th>2</th>-->
+<!--            <th>%</th>-->
+<!--            <th>3</th>-->
+<!--            <th>%</th>-->
+<!--            <th>4</th>-->
+<!--            <th>%</th>-->
+<!--            <th>5</th>-->
+<!--            <th>%</th>-->
+<!--            <th>Total Average (%)</th>-->
+<!--            <th>Attainment Level</th>-->
+<!--          </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--          <tr *ngFor="let co of totalIndirectAttainment; index as idx">-->
+<!--            <td>{{ idx + 1 }}</td>-->
+<!--            <td>{{ co['coCode'] }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['1'].count }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['1'].count / co.totalStudents | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['2'].count }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['2'].count / co.totalStudents | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['3'].count }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['3'].count / co.totalStudents | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['4'].count }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['4'].count / co.totalStudents | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['5'].count }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['5'].count / co.totalStudents | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['totalAvg'] }}</td>-->
+<!--            <td class="font-weight-bold">{{ co['attainmentLevel'] }}</td>-->
+<!--          </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<div class="row w-100 m-0 mt-2">-->
+<!--  <div class="col px-0">-->
+<!--    <div class="card border">-->
+<!--      <div class="card-header bg-white">-->
+<!--        <div class="d-flex justify-content-between align-items-center">-->
+<!--          <h4>Total CO Attainment</h4>-->
+<!--          <button class="btn btn-primary" [disabled]="selectedCourse === undefined || totalDirectAttainment.length === 0" (click)="calculateTotalAttainment()">Calculate</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-body" *ngIf="totalAttainment.length === 0">-->
+<!--        <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>-->
+<!--      </div>-->
+<!--      <div class="table-responsive" *ngIf="totalAttainment.length !== 0">-->
+<!--        <table class="table table-flush text-center">-->
+<!--          <thead class="thead-light">-->
+<!--          <tr>-->
+<!--            <th>Sr. No</th>-->
+<!--            <th>CO Code</th>-->
+<!--            <th>Direct (%)</th>-->
+<!--            <th>In-Direct (%)</th>-->
+<!--            <th>Attainment (%)</th>-->
+<!--            <th>Level</th>-->
+<!--          </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--          <tr *ngFor="let co of totalAttainment; index as idx">-->
+<!--            <td>{{ idx + 1 }}</td>-->
+<!--            <td>{{ co.coCode }}</td>-->
+<!--            <td class="font-weight-bold">{{ co.directAttainment | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co.indirectAttainment | percent:'1.2':'en-US' }}</td>-->
+<!--            <td class="font-weight-bold">{{ co.totalCOAttainment }}</td>-->
+<!--            <td class="font-weight-bold">{{ co.attainmentLevel }}</td>-->
+<!--          </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<ng-template #directAttainmentModalRef let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <h6 class="m-0">Direct Attainment</h6>
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group col">
+      <label for="benchMark">BenchMark</label>
+      <input type="number" #benchMark name="benchMark" id="benchMark" placeholder="eg: 70" class="form-control">
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2"
+            (click)="modal.dismiss('Cross click')">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-sm btn-primary float-right mr-2" (click)="modal.close(benchMark?.value)">
+      Submit
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #inDirectAttainmentModalRef let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <h6 class="m-0">In-Direct Attainment</h6>
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group col">
+      <label for="totaLStudent">Total Student</label>
+      <input type="number" #totaLStudent name="totaLStudent" id="totaLStudent" placeholder="eg: 70" class="form-control">
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2"
+            (click)="modal.dismiss('Cross click')">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-sm btn-primary float-right mr-2" (click)="modal.close(totaLStudent?.value)">
+      Submit
+    </button>
+  </div>
+</ng-template>

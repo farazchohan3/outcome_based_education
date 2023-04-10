@@ -1,0 +1,53 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white border-0">
+        <div class="d-flex flex-column">
+          <h3 class="m-0">POs Attainment Levels and Actions For Improvements</h3>
+          <div class="d-flex flex-row justify-content-between">
+            <app-filters (courseSelections)="getSelectedCourse($event)"></app-filters>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row w-100 m-0 mt-2">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-body" *ngIf="!showTable">
+        <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>
+      </div>
+      <form [formGroup]="gapForm" (ngSubmit)="saveAttainmentGap()" *ngIf="showTable">
+        <div class="card-header bg-white border-0">
+          <div class="d-flex justify-content-end align-items-center">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th>POs</th>
+                <th>Target Level</th>
+                <th>Attainment Level</th>
+                <th>Observation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container formArrayName="gaps" *ngFor="let attr of gapForm.get('gaps')['controls']; index as idx">
+                <tr [formGroupName]="idx">
+                  <td>{{ attr.get('id').value || "" }}</td>
+                  <td><input type="text" formControlName="targetLevel" class="form-control"></td>
+                  <td><input type="text" formControlName="attainmentLevel" class="form-control"></td>
+                  <td><textarea type="text" formControlName="observation" class="form-control w-100"></textarea></td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

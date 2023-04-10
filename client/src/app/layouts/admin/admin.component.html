@@ -1,0 +1,67 @@
+<section class="sticky-top ">
+    <header class=" text-white  p-2 navbackground">
+        <div class="row w-100 m-0">
+            <div class="col-12 col-sm-6 px-0">
+                <div class="d-flex">
+                    <img src="./../../../assets/qau-nav.png" alt="" class="d-none d-sm-block mr-2" width="54px"
+                        height="54px">
+                    <div class="d-flex flex-column text-center text-sm-left">
+                        <h4 class="m-0 mb-1">Outcome Based Education</h4>
+                        <h6 class="m-0">Quaid-i-Azam University, Islamabad</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 d-none d-sm-block">
+                <div class="d-flex align-items-center justify-content-end">
+                    
+                    <div ngbDropdown>
+                        <a ngbDropdownToggle
+                            class="btn btn-outline-light no-hover-effect mt-1 d-flex align-items-center">
+                            <span class="material-icons">person</span>&nbsp; {{ user['firstName'] | titlecase }} {{
+                            user['lastName'] | titlecase }}
+                        </a>
+                        <div ngbDropdownMenu>
+                            <button ngbDropdownItem class="d-flex align-items-center" routerLink="/profile">
+                                <span class="material-icons mr-2">manage_accounts</span>
+                                My Profile
+                            </button>
+                            <button ngbDropdownItem class="d-flex align-items-center" routerLink="/change-password">
+                                <span class="material-icons mr-2">password</span>
+                                Change Password
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button ngbDropdownItem class="d-flex align-items-center" (click)="logOut()">
+                                <span class="material-icons mr-2">logout</span>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <button class="btn btn-light mt-1" (click)="logOut()">Logout</button> -->
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item" *ngFor="let item of menuItems; index as idx">
+                    <a class="nav-link d-flex align-items-center" [routerLink]="[item.path]" [replaceUrl]="true"
+                        routerLinkActive="active">
+                        <span class="material-icons">{{ item.icon }}</span> &nbsp; {{ item.title }}
+                    </a>
+                </li>
+            
+                <li class="nav-item d-block d-sm-none">
+                    <a class="nav-link d-flex align-items-center" (click)="logOut()">
+                        <span class="material-icons">logout</span> &nbsp; Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</section>
+<router-outlet></router-outlet>

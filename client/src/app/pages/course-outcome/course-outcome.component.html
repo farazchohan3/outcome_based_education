@@ -1,0 +1,174 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="d-flex flex-column">
+              <h4 class="m-0">{{ courseModel?.courseTitle | titlecase }}</h4>
+              <h6 class="text-muted text-sm m-0 my-1">Course Outcome</h6>
+              <div class="d-flex flex-wrap">
+                <button class="btn btn-sm mr-1 mb-1" *ngFor="let coType of coTypes; index as idx"
+                        (click)="filterListByCOType(coType.value)" [ngClass]="{
+                    'btn-primary': selectedCOType === idx,
+                    'btn-outline-primary': selectedCOType !== idx
+                  }">
+                  {{ coType.name }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="d-flex flex-column justify-content-end align-items-end" style="height: 100%;">
+              <button class="btn btn-primary d-flex align-items-center float-right"
+                      (click)="openCourseOutcomeModal(courseOutcomeModal)">
+                <span class="material-icons mr-1">add</span>
+                Course Outcome
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="courseOutcomeList.length === 0">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <img src="./../../../assets/empty.svg" class="img-fluid" height="256px" width="256px" alt="No Data">
+          <h4 class="mt-3">
+            No Course Outcoomes Added Yet
+          </h4>
+        </div>
+      </div>
+      <div class="table-responsive" *ngIf="courseOutcomeList.length !== 0">
+        <table class="table table-flush">
+          <thead class="thead-light">
+          <tr>
+            <th>CO Code</th>
+            <th>CO Statement</th>
+            <th>Delivery Methods</th>
+            <th>Bloom Levels</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let co of courseOutcomeList; index as idx">
+            <td>{{ co.coCode }}</td>
+            <td class="w-50 text-wrap">{{ co.coCodeStatement }}</td>
+            <td>{{ co.deliveryMethod }}</td>
+            <td>
+              <p *ngFor="let level of co.cognitiveDomain; index as idx" class="text-sm m-0">
+                {{ getFormattedBloomLevelInfo(level) }}
+              </p>
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary btn-sm mr-1 mb-1"
+                      (click)="openCourseOutcomeModal(courseOutcomeModal, co)">
+                Update
+              </button>
+              <button type="button" class="btn btn-danger btn-sm mr-1 mb-1" (click)="deleteCO(deleteModal, co._id)">Delete</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template let-modal #courseOutcomeModal>
+  <div class="modal-header border-0">
+    <div class="row w-100 m-0">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4>Course {{ updation ? "Updation" : "Creation" }}</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss();">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="courseOutcomeForm" (ngSubmit)="updation ? submitUpdateCOForm(courseOutcomeForm) : submitForm(courseOutcomeForm)">
+    <div class="modal-body">
+      <div class="form-group col-12">
+        <label for="coCode" class="text-sm">Course Outcome Code</label>
+        <input id="coCode" type="text" name="coCode" formControlName="coCode" class="form-control">
+        <!-- <span *ngIf="courseOutcomeForm.get('coCode').hasError('required')" class="text-sm text-danger">Course Outcome Ccde is Required</span> -->
+      </div>
+      <div class="form-group col-12">
+        <label for="coCodeStatement" class="text-sm">Course Outcome Statement</label>
+        <textarea id="coCodeStatement" type="text" name="coCodeStatement" formControlName="coCodeStatement" rows="4"
+                  class="form-control"></textarea>
+      </div>
+      <div class="form-group col-12 d-flex flex-column">
+        <label class="text-sm text-muted">Bloom Levels</label>
+        <div class="btn-group btn-group-toggle" ngbRadioGroup>
+          <label ngbButtonLabel class="btn-sm {{ getCheckedValue(key) ? 'btn-primary' : 'btn-outline-primary' }}" *ngFor="let key of bloomLevelKeys; index as idx" >
+            <input ngbButton type="checkbox" (change)="onChange(key)">
+            {{ key }}
+          </label>
+        </div>
+      </div>
+      <div class="form-group col-12 d-flex flex-column">
+        <label class="text-sm text-muted">Class Hours</label>
+        <input id="classHrs" type="text" name="classHrs" formControlName="classHrs" class="form-control">
+      </div>
+      <div class="form-group col-12 d-flex flex-column">
+        <label class="text-sm text-muted">Lab Hours</label>
+        <input id="labHrs" type="text" name="labHrs" formControlName="labHrs" class="form-control">
+      </div>
+
+      <div class="form-group col-12">
+        <label class="text-sm">Delivery Method</label>
+        <select name="deliveryMethod" id="deliveryMethod" class="custom-select" formControlName="deliveryMethod">
+          <option [ngValue]="null">Select...</option>
+          <option *ngFor="let dept of deliveryMethods; index as idx" [ngValue]="dept">
+            {{ dept }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="row w-100">
+        <div class="col">
+          <div class="d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-dark btn-sm mr-1" (click)="modal.dismiss('Cross Btn Clicked');">
+              Close
+            </button>
+            <button type="submit" class="btn btn-dark btn-sm" [disabled]="courseOutcomeForm.invalid || loader">
+              Submit
+              <span *ngIf="loader">&nbsp;</span>
+              <div *ngIf="loader" class="spinner-border spinner-border-sm text-white" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <!-- <h6 class="m-0">Are you sure want to delete this course outcome?</h6> -->
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <img src="./../../../assets/warning.svg" alt="" class="img-fluid" width="128px" height="128px">
+      <h6 class="m-0 mt-2 text-muted">Are you sure want to delete this course outcome?</h6>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2"
+            (click)="modal.dismiss('Cross click')">
+      NO
+    </button>
+    <button type="submit" class="btn btn-sm btn-danger float-right mr-2" (click)="modal.close('1')">
+      YES
+    </button>
+  </div>
+</ng-template>

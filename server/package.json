@@ -1,0 +1,30 @@
+{
+    "name": "obe-server",
+    "version": "1.0.0",
+    "description": "Object Based Education Server",
+    "main": "server.js",
+    "scripts": {
+        "start": "nodemon server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "NodeJS",
+        "Angular",
+        "Express",
+        "MongoDB",
+        "Server"
+    ],
+    "author": "Fazal Abbas Muhammad Afraz",
+    "license": "ISC",
+    "homepage": "#readme",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.18.2",
+        "ldapjs": "^2.3.1",
+        "mongoose": "^6.0.6",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.15"
+    }
+}

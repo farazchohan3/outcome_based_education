@@ -1,0 +1,170 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <h4>Terms</h4>
+          </div>
+          <div class="col-12 col-sm-6">
+            <button class="btn btn-primary d-flex align-items-center float-right"
+                    (click)="openTermModal(termModel)">
+              <span class="material-icons mr-1">add</span>
+              Terms
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-flush">
+          <thead class="thead-light">
+          <tr>
+            <th>Term No</th>
+            <th>Term Name</th>
+            <th>Batch</th>
+            <th>Department</th>
+            <th>Term Created By</th>
+            <!-- <th>Course Reviewer / Dept.</th> -->
+
+            <th>Created On</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let term of terms; index as idx">
+
+            <td>
+              <div class="d-flex flex-column">
+                <span>{{ term.termNo }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex flex-column">
+                <span>{{ term.termName | titlecase }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex flex-column">
+                <span>{{ term.curriculumName }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="d-flex flex-column">
+                <span>{{ term.deptName }}</span>
+              </div>
+            </td>
+
+
+
+            <td>{{ term.termOwner }}</td>
+            <td>{{ term.createdAt | date: 'dd-MM-yyyy hh:mm:ss a' }}</td>
+            <td>
+              <button type="button" class="btn btn-primary btn-sm mr-1 mb-1"
+                      (click)="openTermModal(termModel, term)">
+                Update
+              </button>
+              <button type="button" class="btn btn-danger btn-sm mr-1 mb-1" (click)="deleteTerm(deleteModal, term._id)">Delete</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template let-model #termModel>
+  <div class="modal-header border-0">
+    <div class="row w-100 m-0">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4>{{ termUpdateBool ? 'Update' : 'Add' }} Terms</h4>
+          <button type="button" class="close" aria-label="Close" (click)="model.dismiss();">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="termForm" (ngSubmit)="submitForm(termForm)">
+    <div class="modal-body">
+      <div class="row w-100 m-0">
+        <div class="form-group col-12 col-sm-6">
+          <label class="text-sm">termName</label>
+          <input type="text" name="termName" formControlName="termName" class="form-control">
+        </div>
+
+        <div class="form-group col-12 col-sm-6">
+          <label class="text-sm">termNo</label>
+          <input type="number" name="termNo" formControlName="termNo" class="form-control">
+        </div>
+
+        <div class="form-group col-12 col-sm-6">
+          <label class="text-sm">Department</label>
+          <select name="deptName" id="deptName" class="custom-select" formControlName="deptName">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let dept of departments; index as idx" [ngValue]="dept">
+              {{ dept }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group col-12 col-sm-6">
+          <label class="text-sm">Owner Name</label>
+          <input type="text" name="ownerName" formControlName="termOwner" class="form-control">
+        </div>
+
+        <div class="form-group col-12 col-sm-6">
+          <label for="curriculum" class="text-sm">Curriculum</label>
+          <select name="curriculum" id="curriculum" #curr class="custom-select" formControlName="curriculum"
+                  (change)="curriculumTerms($event.target.value)">
+            <option [ngValue]="null">Select...</option>
+            <option *ngFor="let curr of curriculums" [ngValue]="curr">
+              {{ curr.curriculumName }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+
+
+      <button type="button" class="btn btn-dark btn-sm mr-1" (click)="model.dismiss('Cross Btn Clicked');">
+        Close
+      </button>
+      <button type="submit" class="btn btn-dark btn-sm" [disabled]="loader">
+        Submit
+        <span *ngIf="loader">&nbsp;</span>
+        <div *ngIf="loader" class="spinner-border spinner-border-sm text-white" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </button>
+
+
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <h6 class="m-0 mt-2 text-muted">Are you sure want to delete this Term?</h6>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2" (click)="modal.dismiss('Cross click')">
+      NO
+    </button>
+    <button type="submit" class="btn btn-sm btn-danger float-right mr-2" (click)="modal.close('1')">
+      YES
+    </button>
+  </div>
+</ng-template>

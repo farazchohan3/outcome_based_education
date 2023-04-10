@@ -1,0 +1,8 @@
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+.btn{
+  background-color:  hsl(263, 46%, 51%);
+  color: white;
+}

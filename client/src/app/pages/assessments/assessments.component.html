@@ -1,0 +1,251 @@
+<div class="container-fluid mt-2">
+  <div class="row">
+    <div class="col">
+      <div class="card ">
+        <div class="card-header bg-white border-0">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <div class="d-flex flex-column">
+                <h4 class="m-0">Course Assessment</h4>
+                <app-filters (courseSelections)="courseSelection($event)"></app-filters>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-12 col-sm-12">
+      <div class="card">
+        <div class="card-header bg-white border-0">
+          <div class="d-flex justify-content-between">
+            <h4>Direct Assessment</h4>
+            <button class="btn btn-primary d-flex align-items-center" [disabled]="selectedCourse === null" (click)="openAssessmentModal(assessmentModal)">
+              <span class="material-icons mr-1">add</span>
+              Add Assessment
+            </button>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="directAssessments?.length === 0">
+          <div class="d-flex flex-column justify-content-center align-items-center p-3">
+            <img src="./../../../assets/empty.svg" class="img-fluid" height="256px" width="256px" alt="No Data">
+            <h4 class="mt-3">
+              {{ selectedCourse === null ? 'Please Select Course' : 'No Assessment Added Yet' }}
+            </h4>
+          </div>
+        </div>
+        <div class="table-responsive" *ngIf="directAssessments?.length !== 0">
+          <table class="table table-flush">
+            <thead class="thead-light">
+            <tr>
+              <th>Sr. No</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Total Marks</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let assessment of directAssessments; index as idx">
+              <td>{{ idx + 1 }}</td>
+              <td>{{ assessment.assessmentName }}</td>
+              <td>{{ assessment.assessmentType }}</td>
+              <td>{{ assessment.totalMarks }}</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm mr-1 mb-1"
+                        (click)="openViewModal(viewModal, assessment, false)">
+                  View Questions
+                </button>
+                <button type="button" class="btn btn-primary  btn-sm mr-1 mb-1"
+                        (click)="openAssessmentModal(assessmentModal, false, assessment)">
+                  Update
+                </button>
+                <button type="button" class="btn btn-danger  btn-sm mr-1 mb-1" (click)="deleteAssessment(deleteModal, assessment._id)" style="column-rule: red;">Delete</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<ng-template let-modal #assessmentModal>
+  <div class="modal-header border-0">
+    <div class="row w-100 m-0">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 *ngIf="!surveyBool">Course {{ updation ? "Updation" : "Creation" }}</h4>
+          <h4 *ngIf="surveyBool">Survey {{ updation ? "Updation" : "Creation" }}</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss();">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="assessmentForm" (ngSubmit)="submitAssessmentForm(assessmentForm)">
+    <div class="modal-body">
+      <div class="form-group col-12">
+        <label for="coCode" class="text-sm">{{ surveyBool ? 'Survey' : 'Assessment' }} Name</label>
+        <input id="assessmentName" type="text" name="assessmentName" formControlName="assessmentName"
+               class="form-control">
+        <!-- <span *ngIf="courseOutcomeForm.get('coCode').hasError('required')" class="text-sm text-danger">Course Outcome Ccde is Required</span> -->
+      </div>
+      <div class="form-group col-12" *ngIf="!surveyBool">
+        <label for="coCodeStatement" class="text-sm">Assessment Type</label>
+        <select name="assessmentType" id="assessmentType" formControlName="assessmentType" class="custom-select">
+          <option [ngValue]="null">Select...</option>
+          <option *ngFor="let type of assessmentTypes; index as idx" [ngValue]="type" [disabled]="type === 'ESE' && eseBool">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+      <div class="col-12">
+        <div class="row sticky-top bg-white py-2">
+          <div class="col-12">
+            <div class="d-flex justify-content-between w-100">
+              <label>Questions</label>
+              <button type="button" class="btn btn-primary d-flex align-items-center" (click)="addQuestionToQuestionsArray()">
+                <span class="material-icons">add</span>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-container formArrayName="questions"
+                      *ngFor="let attr of assessmentForm.get('questions')?.controls; index as idx">
+          <div class="row mt-2" [formGroupName]="idx">
+            <div class="col-12 col-sm-4">
+              <div class="d-flex flex-column">
+                <div class="form-group m-0 mb-1">
+                  <label>Question No</label>
+                  <input type="text" class="form-control" name="questionNo" id="questionNo"
+                         formControlName="questionNo">
+                </div>
+                <div class="form-group m-0 mb-1">
+                  <label>Course Outcome</label>
+                  <select name="coCode" id="coCode" formControlName="coCode" class="custom-select">
+                    <option [value]="null">Select</option>
+                    <option value="CO1">CO1</option>
+                    <option value="CO2">CO2</option>
+                    <option value="CO3">CO3</option>
+                    <option value="CO4">CO4</option>
+                    <option value="CO5">CO5</option>
+                    <option value="CO6">CO6</option>
+                  </select>
+                </div>
+                <div class="form-group m-0 mb-1" *ngIf="!surveyBool">
+                  <label>RBT Level</label>
+                  <select name="bloomLevel" id="bloomLevel" formControlName="bloomLevel" class="custom-select">
+                    <option [value]="null">Select</option>
+                    <option *ngFor="let level of bloomLevelKeys" [ngValue]="level">{{ level }}</option>
+                  </select>
+                </div>
+                <div class="form-group m-0 mb-4" *ngIf="!surveyBool">
+                  <label>Maximum Marks</label>
+                  <input type="number" class="form-control" name="maximumMarks" id="maximumMarks"
+                         formControlName="maximumMarks">
+                </div>
+                <button class="btn btn-danger" (click)="removeQuestionFromQuestionArray(idx)">Remove Question</button>
+              </div>
+            </div>
+            <div class="col-12 col-sm">
+              <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" name="questionStatement" id="questionStatement"
+                          formControlName="questionStatement" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="row w-100">
+        <div class="col">
+          <div class="d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-dark btn-sm mr-1" (click)="modal.dismiss('Cross Btn Clicked');">
+              Close
+            </button>
+            <button type="submit" class="btn btn-dark btn-sm" [disabled]="assessmentForm.invalid || loader">
+              Submit
+              <span *ngIf="loader">&nbsp;</span>
+              <div *ngIf="loader" class="spinner-border spinner-border-sm text-white" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center border-0">
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <img src="./../../../assets/warning.svg" alt="" class="img-fluid" width="128px" height="128px">
+      <h6 class="m-0 mt-2 text-muted">Are you sure want to delete this assessment?</h6>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2" (click)="modal.dismiss('Cross click')">
+      NO
+    </button>
+    <button type="submit" class="btn btn-sm btn-danger float-right mr-2" (click)="modal.close('1')">
+      YES
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #viewModal let-modal>
+  <div class="modal-header d-flex justify-content-between align-items-center">
+    <div class="d-flex flex-column">
+      <h5 class="m-0 mb-1">{{ assessmentModel?.assessmentName }} Questions</h5>
+      <span *ngIf="!surveyBool">Total Marks: <strong>{{ assessmentModel.totalMarks || 0 }}</strong></span>
+    </div>
+    <button type="button" class="close" aria-label="Close" id="closeModal" #closeModal
+            (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-0">
+    <div class="table-responsive">
+      <table class="table table-flush text-center">
+        <thead class="thead-light">
+        <tr>
+          <th>Sr. No</th>
+          <th>CO Code</th>
+          <th>Statement</th>
+          <th *ngIf="!surveyBool">Maximum Marks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let question of assessmentModel?.questions; index as idx">
+          <td>{{ idx + 1 }}</td>
+          <td>{{ question.coCode }}</td>
+          <td class="text-wrap text-justify">{{ question.questionStatement }}</td>
+          <td class="text-center" *ngIf="!surveyBool">{{ question.maximumMarks }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-dark float-right mr-2" (click)="modal.dismiss('Cross click')">
+      Close
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,41 @@
+<div class="row w-100 m-0">
+  <div class="col px-0">
+    <div class="card border">
+      <div class="card-header bg-white border-0">
+        <div class="d-flex flex-column">
+          <h4 class="m-0">PO/PSO Attainment</h4>
+          <div class="d-flex flex-row justify-content-between">
+            <app-filters (courseSelections)="getSelectedCourse($event)"></app-filters>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="totalPOPSOAttainment.length === 0">
+        <app-no-data [showImageBool]="false" message="No Data!! Please Select Course First"></app-no-data>
+      </div>
+      <div class="table-responsive" *ngIf="totalPOPSOAttainment.length !== 0">
+        <table class="table table-flush m-0 text-center">
+          <thead class="thead-light">
+            <tr>
+              <th>Sr. No</th>
+              <th>PO/PSO</th>
+              <th>CO's</th>
+              <th>Map Strength</th>
+              <th>Attainment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let poAttaint of totalPOPSOAttainment; index as idx">
+              <td>{{ idx + 1 }}</td>
+              <td>{{ poAttaint.poKey }}</td>
+              <td>
+                <span *ngFor="let co of poAttaint.coArray; index as idx" class="font-weight-bold mr-2">{{ co }}</span>
+              </td>
+              <td class="font-weight-bold">{{ poAttaint.mappingStrength }}</td>
+              <td class="font-weight-bold">{{ poAttaint.attainment / 100 | percent:'1.2':'en-US' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="contanier-fluid" style="margin-top: 2rem;">
+  <div class="row w-100 m-0">
+    <div class="col-12 col-sm-3 mb-4" *ngFor="let item of menuItems;">
+      <div class="card shadow-sm boder-dark card-hover" [routerLink]="item.path" style="cursor: pointer;">
+        <div class="card-body">
+          <div class="d-flex flex-column justify-content-center align-items-center"  style="height: 200px;">
+            <span class="material-icons text-muted" style="font-size: 44px;">{{ item.icon }}</span>
+            <h5 class="m-0 mt-2 text-muted">{{ item.title }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

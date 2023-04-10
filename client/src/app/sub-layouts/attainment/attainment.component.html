@@ -1,0 +1,24 @@
+<!-- <app-filters></app-filters> -->
+<div class="container-fluid mt-2">
+  <div class="row">
+    <div class="col-12 col-sm-2">
+      <div class="card sticky">
+        <div class="card-body px-0 py-2">
+          <nav class="navbar navbar-light">
+            <ul class="navbar-nav flex-colum">
+              <li class="nav-item" *ngFor="let item of menuItems; index as idx">
+                <a class="nav-link d-flex align-items-start" [routerLink]="[item.path]" [replaceUrl]="true" routerLinkActive="active">
+                  <span class="material-icons mr-2">{{ item.icon }}</span> &nbsp;
+                  <span>{{ item.title }}</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-10" style="margin-bottom: 2rem;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
